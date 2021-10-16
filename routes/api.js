@@ -43,7 +43,7 @@ router.get("/buildings/search/", function (req, res, next) {
         MongoClient.connect(url, function(err, db) {
             if (err) throw err;
             var dbo = db.db(db_name);
-            dbo.collection("buildings").find( {mBuildingName:  new RegExp(search, 'i')}).toArray(function(err, result) {
+            dbo.collection("buildings").find( {mName:  new RegExp(search, 'i')}).toArray(function(err, result) {
                 if (err) {
                     return res.status(500).json({code:500, message: err})
                 }else {
@@ -82,7 +82,7 @@ router.get("/buildings/:id", function (req, res) {
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
         var dbo = db.db(db_name);
-        dbo.collection("buildings").findOne({mBuildingId: req.params.id}, function(err, result) {
+        dbo.collection("buildings").findOne({mID: req.params.id}, function(err, result) {
             if (err) {
                 return res.status(500).json({code: 500, message: err})
             }else if(result == null){
@@ -106,7 +106,7 @@ router.put("/buildings/:id", function (req, res) {
         var string_data = JSON.stringify(req.body);
         var json_data = JSON.parse(string_data);
 
-        dbo.collection("buildings").findOne({mBuildingId: req.params.id}, function(err, result) {
+        dbo.collection("buildings").findOne({mID: req.params.id}, function(err, result) {
             if(err) {
                 return res.status(500).json({code: 500, message: err.message})
             }
@@ -117,9 +117,9 @@ router.put("/buildings/:id", function (req, res) {
                 dbo.collection("buildings").save(
                     {
                         _id:_id,
-                        mBuildingId: json_data.mBuildingId,
-                        mBuildingName: json_data.mBuildingName,
-                        mBuildingAddress: json_data.mBuildingAddress,
+                        mID: json_data.mID,
+                        mName: json_data.mName,
+                        mAddress: json_data.mAddress,
                         mType: json_data.mType,
                         mFloors: json_data.mFloors
                     }, function (err2, result2) {
@@ -141,7 +141,7 @@ router.delete("/buildings/:id", function (req, res) {
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
         var dbo = db.db(db_name);
-        var myquery = { mBuildingId: req.params.id };
+        var myquery = { mID: req.params.id };
         dbo.collection("buildings").deleteOne(myquery, function(err, obj) {
             db.close();
             console.log(obj.deletedCount);
